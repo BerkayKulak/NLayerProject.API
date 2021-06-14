@@ -17,7 +17,8 @@ namespace NLayerProject.Core.Repositories
 
         // find(x=>x.id=23) burdaki expression üzerinden entity benim yazmış olduğum sorgu üzerinden işaretlenecek
         //function delegesi ve predicate delegesi araştır ??? func delegesi
-        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
+        // EntityFramework tarafında Where sorgusu generic olmadığı için async yapamayız bu yüzden task kullanmıcaz
+        Task <IEnumerable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
 
 
         // category.singleOrDefaultAsyn(x=>x.name="kalem")
@@ -34,7 +35,7 @@ namespace NLayerProject.Core.Repositories
         void Remove(TEntity entity);
 
         //birden fazla kayıt silicez
-        void RemoveRange(IEnumerable<TEntity> entity);
+        void RemoveRange(IEnumerable<TEntity> entities);
 
         TEntity Update(TEntity entity);
         

@@ -16,7 +16,7 @@ namespace NLayerProject.Core.Service
 
         // find(x=>x.id=23) burdaki expression üzerinden entity benim yazmış olduğum sorgu üzerinden işaretlenecek
         //function delegesi ve predicate delegesi araştır ??? func delegesi
-        Task<IEnumerable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> Where(Expression<Func<TEntity, bool>> predicate);
 
 
         // category.singleOrDefaultAsyn(x=>x.name="kalem")
@@ -24,16 +24,16 @@ namespace NLayerProject.Core.Service
         Task<TEntity> SingleOrDefaultAsnyc(Expression<Func<TEntity, bool>> predicate);
 
         //bir nesnenin eklenmesi
-        Task AddAsync(TEntity entity);
+        Task<TEntity> AddAsync(TEntity entity);
 
         // birden fazla kayıdı gerçekleştirebilirim.
-        Task AddRangeAsync(IEnumerable<TEntity> entities);
+        Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities);
 
         // async karşılığı yok
         void Remove(TEntity entity);
 
         //birden fazla kayıt silicez
-        void RemoveRange(IEnumerable<TEntity> entity);
+        void RemoveRange(IEnumerable<TEntity> entities);
 
         TEntity Update(TEntity entity);
 
