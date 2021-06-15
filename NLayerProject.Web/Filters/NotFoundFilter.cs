@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-using NLayerProject.Core.Service;
+
+using NLayerProject.Web.ApiService;
 using NLayerProject.Web.DTOs;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace NLayerProject.Web.Filters
         // o zaman bu sadece IProductService için geçerli olur
         // ama ben IService üzerinden kullanırsam daha iyi. IService kullanırsam generic olarak productu vermem lazım
         // NotFoundFilter'im product için geçerli olmuş olcak. hmmmm ?
-        
-        private readonly ICategoryService _categoryService;
+
+        private readonly CategoryApiService _categoryApiService;
 
 
         // elimde product ile işlem yapacağım bir servis var.
@@ -27,9 +28,9 @@ namespace NLayerProject.Web.Filters
         // servis filter olarak tanımlıcam constructurı olmasa direk validationfilter gibi tanımlıcaktım.
         // startup cs ye kaydetcez
 
-        public NotFoundFilter(ICategoryService categoryService)
+        public NotFoundFilter(CategoryApiService categoryApiService)
         {
-            _categoryService = categoryService;
+            _categoryApiService = categoryApiService;
         }
 
         public async override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
@@ -41,7 +42,7 @@ namespace NLayerProject.Web.Filters
 
             // böyle bir ürün var mı bunları tespit ettiğim kısım
 
-            var product = await _categoryService.GetByIdAsync(id);
+            var product = await _categoryApiService.GetByIdAsync(id);
 
             // product diye ürün varsa 
             if(product!=null)

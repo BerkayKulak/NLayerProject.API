@@ -10,10 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NLayerProject.Service\NLayerProject.Service.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Views\CategoriesController1\" />
   </ItemGroup>
 

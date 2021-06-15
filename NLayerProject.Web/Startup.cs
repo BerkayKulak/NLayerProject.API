@@ -1,17 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NLayerProject.Core.Repositories;
-using NLayerProject.Core.Service;
-using NLayerProject.Core.UnitOfWorks;
-using NLayerProject.Data;
-using NLayerProject.Data.Repositories;
-using NLayerProject.Data.UnitOfWorks;
-using NLayerProject.Service.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,18 +38,18 @@ namespace NLayerProject.Web
             
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IService<>), typeof(Service.Services.Service<>));
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(Configuration["ConnectionStrings:SqlConStr"].ToString(), o => {
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IService<>), typeof(Service.Services.Service<>));
+            //services.AddScoped<ICategoryService, CategoryService>();
+            //services.AddScoped<IProductService, ProductService>();
+            //services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //services.AddDbContext<AppDbContext>(options =>
+            //{
+            //    options.UseSqlServer(Configuration["ConnectionStrings:SqlConStr"].ToString(), o => {
 
-                    o.MigrationsAssembly("NLayerProject.Data");
-                });
-            });
+            //        o.MigrationsAssembly("NLayerProject.Data");
+            //    });
+            //});
 
 
             services.AddControllersWithViews();

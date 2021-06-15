@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using NLayerProject.Core.Models;
-using NLayerProject.Core.Service;
+
 using NLayerProject.Web.ApiService;
 using NLayerProject.Web.DTOs;
 using NLayerProject.Web.Filters;
@@ -14,21 +13,21 @@ namespace NLayerProject.Web.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ICategoryService _categoryService;
+        //private readonly ICategoryService _categoryService;
         // startup tarafında DI olarak ekledim(servis olarak ekledim)dolayı bu CategoryApiService
         // nerde kullanmak istiyorsam ilgili sınıfın ctorunda geçmem yeterli olacaktır.
         private readonly CategoryApiService _categoryApiService;
         private readonly IMapper _mapper;
-        public CategoriesController(ICategoryService categoryService, IMapper mapper, CategoryApiService categoryApiService)
+        public CategoriesController(IMapper mapper, CategoryApiService categoryApiService)
         {
-            _categoryService = categoryService;
+         
             _mapper = mapper;
             _categoryApiService = categoryApiService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var categories = await _categoryService.GetAllAsync();
+            var categories = await _categoryApiService.GetAllAsync();
 
             // kategori tarafında ( bu tarafta) viewe dönerken
             //_mapper.Map<IEnumerable<CategoryDto>>(categories)  daki data geliyor
