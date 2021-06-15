@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NLayerProject.Core.Models;
 using NLayerProject.Core.Service;
+using NLayerProject.Web.ApiService;
 using NLayerProject.Web.DTOs;
 using NLayerProject.Web.Filters;
 using System;
@@ -14,11 +15,15 @@ namespace NLayerProject.Web.Controllers
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;
+        // startup tarafında DI olarak ekledim(servis olarak ekledim)dolayı bu CategoryApiService
+        // nerde kullanmak istiyorsam ilgili sınıfın ctorunda geçmem yeterli olacaktır.
+        private readonly CategoryApiService _categoryApiService;
         private readonly IMapper _mapper;
-        public CategoriesController(ICategoryService categoryService, IMapper mapper)
+        public CategoriesController(ICategoryService categoryService, IMapper mapper, CategoryApiService categoryApiService)
         {
             _categoryService = categoryService;
             _mapper = mapper;
+            _categoryApiService = categoryApiService;
         }
 
         public async Task<IActionResult> Index()
@@ -47,7 +52,8 @@ namespace NLayerProject.Web.Controllers
         [HttpPost]
         public async Task<IActionResult>  Create(CategoryDto categoryDto)
         {
-            await _categoryService.AddAsync(_mapper.Map<Category>(categoryDto));
+            //await _categoryService.AddAsync(_mapper.Map<Category>(categoryDto));
+            await _categoryApiService.AddAsync(categoryDto);
 
             //anasayfaya yönlendirme işlemini gerçekleştiricem
 
@@ -59,7 +65,7 @@ namespace NLayerProject.Web.Controllers
         public async Task<IActionResult> Update(int id)
         {
             // idsi 5 olan kategoriyi elde edicem
-            var category = await _categoryService.GetByIdAsync(id);
+            var category = await _categoryApiService.GetByIdAsync(id);
             // kategoriyi bi doldurucam çünkü update işlemi olduğundan dolayı veritabanından kategoriyi almam lazım
             return View(_mapper.Map<CategoryDto>(category));
         }
@@ -68,18 +74,21 @@ namespace NLayerProject.Web.Controllers
         [HttpPost]
         // update olduktan sonra cshtmlden bana ne gelecek ?
         // categoryDto nesnesi gelecek
-        public IActionResult Update(CategoryDto categoryDto)
+        public async Task<IActionResult> Update(CategoryDto categoryDto)
         {
-            _categoryService.Update(_mapper.Map<Category>(categoryDto));
+            //Dto yu kategoriye maplemiştik.ama artık api ile haberleşeceğinden dolayı
+            //api ile dtolar üzerinden haberleştiğinden dolayı artık buna gerek yok
+            //_categoryService.Update(_mapper.Map<Category>(categoryDto));
+           await _categoryApiService.Update(categoryDto);
             return RedirectToAction("Index");
 
 
         }
         [ServiceFilter(typeof(NotFoundFilter))]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult > Delete(int id)
         {
-            var category = _categoryService.GetByIdAsync(id).Result;
-            _categoryService.Remove(category);
+            //var category =await _categoryApiService.GetByIdAsync(id);
+            await _categoryApiService.Remove(id);
             return RedirectToAction("Index");
 
 
