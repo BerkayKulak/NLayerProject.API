@@ -20,6 +20,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using NLayerProject.API.Filters;
+using NLayerProject.API.FÝlters;
+using Microsoft.AspNetCore.Diagnostics;
+using NLayerProject.API.DTOs;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
+using NLayerProject.API.Extensions;
 namespace NLayerProject.API
 {
     public class Startup
@@ -47,6 +54,8 @@ namespace NLayerProject.API
 
             services.AddAutoMapper(typeof(Startup));
 
+            //constructrunda interface implemente ettiðimden dolayý
+            services.AddScoped<NotFoundFilter>();
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped(typeof(IService<>), typeof(Service.Services.Service<>));
@@ -60,7 +69,18 @@ namespace NLayerProject.API
             // bir request esnasýnda birden fazla ihtiyaç olursa ayný nesne örneðini yani ilk oluþturduðu nesne örneðini kullanýcak
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddControllers();
+            // her kontrollerde gidip bu validationFilteri yazmak istemiyorsam o zaman buraya geip
+            // global olarak tüm controllerime eklemek istiyorsam
+            services.AddControllers(o=> {
+
+                o.Filters.Add(new ValidationFilter());
+            });
+
+            services.Configure<ApiBehaviorOptions>(options => {
+
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "NLayerProject.API", Version = "v1" });
@@ -76,6 +96,8 @@ namespace NLayerProject.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NLayerProject.API v1"));
             }
+
+            app.UseCustomException();
 
             app.UseHttpsRedirection();
 

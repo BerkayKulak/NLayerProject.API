@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NLayerProject.API.DTOs;
+using NLayerProject.API.Filters;
+using NLayerProject.API.Fİlters;
 using NLayerProject.Core.Models;
 using NLayerProject.Core.Service;
 using System;
@@ -24,14 +26,18 @@ namespace NLayerProject.API.Controllers
             _mapper = mapper;
         }
 
+      
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            //throw new Exception("tüm dataları çekerken bir hata meydana geldi.");
             var products = await _productService.GetAllAsync();
             return Ok(_mapper.Map<IEnumerable<ProductDto>>(products));
         }
 
-
+        // eğer id ye sahip bir product veritabanında yoksa ben daha bunun içersinie girmeden
+        // benim filterim devreye giricek ve dönecek
+        [ServiceFilter(typeof(NotFoundFilter))]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -46,6 +52,7 @@ namespace NLayerProject.API.Controllers
             return Ok(_mapper.Map<ProductWithCategoryDto>(product));
         }
 
+        //[ValidationFilter]
         [HttpPost]
         public async Task<IActionResult> Save(ProductDto productDto)
         {
@@ -61,7 +68,8 @@ namespace NLayerProject.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{şd}")]
+        [ServiceFilter(typeof(NotFoundFilter))]
+        [HttpDelete("{id}")]
         public IActionResult Remove(int id)
         {
             //async await keywordü kullanmak istemiyorsak result kullanırız.
